@@ -1,5 +1,6 @@
 // # CoveoRelatedResult
 //
+// CoveoRelatedResults makes a query similar to a CoveoFacet but can be provided additionnal query parameters or completly new ones.
 // This components makes a completly new query using groupBy component of the coveo searchApi, it doesnt use the current query so
 // if you want less httprequests and more performance some tweaking will be needed.
 // This Component acts almost like a facet, in some case a CoveoFacet may be a better use
