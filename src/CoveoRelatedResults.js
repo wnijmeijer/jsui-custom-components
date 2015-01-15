@@ -1,54 +1,53 @@
-$("#search").on(Coveo.Events.QueryEvents.doneBuildingQuery, function(e, args) {
-  var query = args.queryBuilder.build()
+function CoveoRelatedResults(searchInterface, containerSelector, templateSelector, fieldA, fieldB, relatedQuery){
+  if (!(this instanceof CoveoRelatedResults) ) return new CoveoRelatedResults(searchInterface, containerSelector, templateSelector, fieldA, fieldB, relatedQuery);
+  var groupByIndex = -1;
+  var lastGroupByResult = [];
 
-  var expressions = [];
-  _.forEach([query.q,query.aq, "@URI"],function(exp){if(exp){expressions.push("("+exp+")")}});
-
-  var query = {
-    q: expressions.join(" AND "),
-    numberOfResults: 0,
-    groupBy : [{
-      field: "@expert",
+  $(searchInterface).on(Coveo.Events.QueryEvents.doneBuildingQuery, function(e, args) {
+    // We store the groupBy index because it will come back in the same order
+    groupByIndex = args.queryBuilder.groupByRequests.length;
+    args.queryBuilder.groupByRequests.push({
+      field: fieldA,
       sortCriteria: "ChiSquare",
       maximumNumberOfValues: 4,
-      injectionDepth: 1000,
-      queryOverride: expressions.join(" AND ")
-    }]
-  }
-
-  Coveo.Rest.SearchEndpoint.endpoints["default"].search(query).done(function(data) {
-    var results = data.groupByResults[0].values
-
-    var relatedItems = _.map(results,function(result){
-      return "\""+result.value+ "\""
+      injectionDepth: 1000
     })
-
-    var query = {
-      q:"@useremail=("+relatedItems.join(",")+")"
-    };
-
-    var groupByResults = results;
-
-    Coveo.Rest.SearchEndpoint.endpoints["default"].search(query).done(function(data) {
-      _.forEach()
-      var keyedResults = {}
-      _.forEach(data.results,function(result){
-        keyedResults[result.raw["useremail"]]=result
-      })
-
-      _.forEach(groupByResults,function(result){
-        result["fullResult"] = keyedResults[result.value];
-      })
-
-      // Template and add things plz
-      var container = $("#ExpertsContainer").empty();
-      var template = _.template($('#experts-template').text())
-
-      _.forEach(groupByResults,function(result){
-        console.log(result)
-        container.append(template(result))
-      });
-
-    });
   });
-});
+  
+  $(searchInterface).on(Coveo.Events.QueryEvents.querySuccess, function(e, args) {
+    if(groupByIndex != -1){
+      if(args.results.groupByResults.length == 0){
+        $(containerSelector).empty();
+      } else {
+        var groupByResults = args.results.groupByResults[groupByIndex].values;
+        groupByIndex = -1;
+        if(_.some(groupByResults, function(result, i){ return lastGroupByResult.indexOf(result.value+':'+result.numberOfResults) != i; })){
+          lastGroupByResult = _.map(groupByResults, function(result){ return result.value+':'+result.numberOfResults; });
+
+          var queryBuilder = new Coveo.Ui.QueryBuilder();
+          queryBuilder.advancedExpression.addFieldExpression(fieldB, '==', _.map(groupByResults, function(result){return result.value}));
+          queryBuilder.constantExpression.add(relatedQuery);
+
+          Coveo.Rest.SearchEndpoint.endpoints["default"].search(queryBuilder.build()).done(function(data) {
+            var resultsMap = {}
+
+            _.forEach(data.results,function(result){
+              resultsMap[result.raw[fieldB.substr(1)]] = result;
+            });
+
+            var container = $(containerSelector).empty();
+            var template = _.template($(templateSelector).text())
+
+            _.forEach(groupByResults,function(result){
+              console.log(result);
+              container.append(template({
+                groubBy:result,
+                result:resultsMap[result.value]
+              }));
+            });
+          });
+        }
+      }
+    }
+  });
+}
