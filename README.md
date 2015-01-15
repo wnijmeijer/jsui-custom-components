@@ -35,7 +35,14 @@ which gives you an array of objects:
   ...
 ]
 ```
+Usage (with jquery):
 
+```js
+$("#popularquerier").on("dataloaded",function(e, results, query){
+  // DO stuff
+  console.log(results,query)
+})
+```
 
 
 ### CoveoSimpleRelatedResults
