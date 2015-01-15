@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Salesforce</title>
+  <meta about="Search Salesforce content."/>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0,  maximum-scale=1.0, user-scalable=0">
+  <script src="js/CoveoJsSearch.WithDependencies.js"></script>
+  <link rel="stylesheet" href="css/CoveoFullSearch.css"/>
+
+  <script type="text/javascript">
+    $(function () {
+      Coveo.Rest.SearchEndpoint.configureSampleEndpoint();
+
+      /*
+
+       // Use this code to use a cloud index
+       Coveo.Rest.SearchEndpoint.configureCloudEndpoint('OrganizationName');
+
+       // Use this code to use an on-premise index
+       Coveo.Rest.SearchEndpoint.configureOnPremiseEndpoint('http://server:8080/Coveo/Rest');
+
+       // Use this code to use a custom endpoint
+       Coveo.Rest.SearchEndpoint.endpoints["default"] = new Coveo.Rest.SearchEndpoint({
+       restUri: 'http://server:8080/Coveo/Rest'
+       });
+
+       */
+
+      $('#search').coveo('init');
+    });
+  </script>
+</head>
+
+<body id="search" class='CoveoSearchInterface' data-enable-history="true">
+
+<div class="coveo-tab-section">
+  <a class="CoveoTab"
+     data-id="Salesforce"
+     data-caption="Salesforce"
+     data-icon="coveo-sprites-tab-salesforce"
+     data-expression="@sfid"></a>
+</div>
+
+<div class="coveo-search-section">
+  <div class="coveo-logo-column">
+    <div class="coveo-logo"></div>
+  </div>
+  <div class="coveo-searchBox-column">
+    <div class="coveo-search-section-wrapper">
+      <div class="CoveoSettings" data-include-in-menu=".CoveoShareQuery,.CoveoPreferencesPanel"></div>
+      <div class="CoveoSearchBox" data-activate-omnibox="true"></div>
+    </div>
+  </div>
+</div>
+
+<div class="coveo-results-section">
+  <div class="coveo-facet-column">
+    <div data-tab="Salesforce">
+      <div class="CoveoFacet"
+           data-title="Type"
+           data-field="@objecttype"
+           data-number-of-values="5"></div>
+
+      <div class="CoveoFacet"
+           data-title="Close quarter"
+           data-field="@sfopportunityclosedquarterc"
+           data-computed-field="@sfopportunityamountconverted"
+           data-sort-criteria="AlphaDescending"></div>
+
+      <div class="CoveoFacet"
+           data-title="Salesforce Account"
+           data-field="@sfaccountname"
+           data-computed-field="@sfopportunityamountconverted"
+           data-sort-criteria="ComputedFieldDescending"
+           data-number-of-values="7"></div>
+
+      <div class="CoveoFacet"
+           data-title="Salesforce Owner"
+           data-field="@sfownername"
+           data-computed-field="@sfopportunityamountconverted"
+           data-sort-criteria="ComputedFieldDescending"
+           data-number-of-values="7"></div>
+
+      <div class="CoveoFacet"
+           data-title="Opportunity Type"
+           data-field="@sfopportunitytype"
+           data-computed-field="@sfopportunityamountconverted"
+           data-sort-criteria="ComputedFieldDescending"
+           data-number-of-values="5"></div>
+
+      <div class="CoveoFacet"
+           data-title="Opportunity Stage"
+           data-field="@sfopportunitystagename"
+           data-computed-field="@sfopportunityamountconverted"
+           data-sort-criteria="ComputedFieldDescending"></div>
+
+      <div class="CoveoFacet"
+           data-title="Lead Source"
+           data-field="@sfleadsource"
+           data-computed-field="@sfopportunityamountconverted"
+           data-sort-criteria="ComputedFieldDescending"
+           data-number-of-values="5"></div>
+    </div>
+  </div>
+
+  <div class="coveo-results-column">
+    <div class="CoveoShareQuery"></div>
+    <div class="CoveoPreferencesPanel">
+      <div class="CoveoResultsPreferences"></div>
+      <div class="CoveoResultsFiltersPreferences"></div>
+    </div>
+    <div class="CoveoBreadcrumb"></div>
+
+    <div class="coveo-results-header">
+      <div class="coveo-summary-section">
+        <span class="CoveoQuerySummary"></span>
+        <span class="CoveoQueryDuration"></span>
+      </div>
+      <div class="coveo-sort-section">
+        <span class="CoveoSort" data-sort-criteria="relevancy">Relevance</span>
+        <span class="CoveoSort" data-sort-criteria="date descending,date ascending">Date</span>
+        <span class="CoveoSort" data-sort-criteria="@sfopportunityamountconverted descending,@sfopportunityamountconverted ascending" data-tab="Salesforce">Amount</span>
+      </div>
+      <div class="coveo-clear"></div>
+    </div>
+
+    <div class="CoveoHiddenQuery"></div>
+    <div class="CoveoDidYouMean"></div>
+    <div class="CoveoErrorReport" data-pop-up="false"></div>
+
+    <div class="CoveoResultList" data-wait-animation="fade">
+      <script id="Salesforce" type="text/x-underscore-template">
+        <%= fromFileTypeToIcon(obj) %>
+
+        <div class="coveo-date"><%-dateTime(raw.sysdate)%></div>
+
+        <div class="coveo-title">
+          <span class="CoveoFieldValue coveo-badge" data-field="@objecttype"></span>
+          <a class="CoveoResultLink" ><%=title?highlight(title, titleHighlights):clickUri%></a>
+          <%= loadTemplate("SalesforceQuickView") %>
+        </div>
+
+        <table class="CoveoFieldTable">
+          <tr data-field="@sfaccountname" data-caption="Account"/>
+          <tr data-field="@sfownername" data-caption="Owner"/>
+
+          <tr data-field="@sfopportunityamountconverted" data-caption="Total" data-helper="currency"/>
+          <tr data-field="@sfopportunitylicensingstotalcconverted" data-caption="License" data-helper="currency"/>
+          <tr data-field="@sfopportunityamountsupportcconverted" data-caption="Support" data-helper="currency"/>
+          <tr data-field="@sfopportunityconsultingstotalcconverted" data-caption="PS" data-helper="currency"/>
+          <tr data-field="@sfopportunitystagename" data-caption="Stage"/>
+          <tr data-field="@sfopportunitydealtypec" data-caption="Deal Type"/>
+          <tr data-field="@sfopportunitycompetitionc" data-caption="Competition" data-split-values="true"/>
+          <tr data-field="@sfibdusername" data-caption="ISR"/>
+          <tr data-field="@sfopportunityregionc" data-caption="Region"/>
+
+          <tr data-field="@sfleadsource" data-caption="Lead Source"/>
+          <tr data-field="@sfleadstatus" data-caption="Lead status"/>
+
+          <tr data-field="@sysworktitle" data-caption="Work title"/>
+          <tr data-field="@sfemail" data-caption="Email" data-helper="email" data-html-value="true"/>
+          <tr data-field="@sfcontactphone" data-caption="Phone"/>
+        </table>
+      </script>
+
+      <script id="SalesforceQuickView" type="text/x-underscore-template">
+        <div class="CoveoQuickView" data-title="<%= attrEncode(fromFileTypeToIcon(obj) + title) %>" data-fixed="true" data-template-id="SalesforceQuickViewContent">
+        </div>
+      </script>
+
+      <script id="SalesforceQuickViewContent" type="text/x-underscore-template">
+        <div class="coveo-quick-view-header">
+          <table class="CoveoFieldTable">
+            <tr data-field="@sysdate" data-caption="Date" data-helper="dateTime"></tr>
+            <tr data-field="@objecttype" data-caption="Type"></tr>
+          </table>
+        </div>
+        <div class="CoveoQuickViewDocument"></div>
+      </script>
+
+      <script class="result-template" type="text/x-underscore-template">
+        <%=
+        loadTemplates({
+        'Salesforce' : raw.sfid != undefined
+        })
+        %>
+      </script>
+    </div>
+    <div class="CoveoPager"></div>
+  </div>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Email</title>
+  <meta about="Search Email content."/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="format-detection" content="telephone=no">
+  <script src="phonegap.js"></script>
+  <script src="inappbrowser.js"></script>
+  <script src="js/CoveoJsSearch.WithDependencies.js"></script>
+  <link rel="stylesheet" href="css/CoveoMobileSearch.css"/>
+
+  <script type="text/javascript">
+    $(function () {
+      Coveo.Rest.SearchEndpoint.configureSampleEndpoint();
+
+      /*
+
+       // Use this code to use a cloud index
+       Coveo.Rest.SearchEndpoint.configureCloudEndpoint('OrganizationName');
+
+       // Use this code to use an on-premise index
+       Coveo.Rest.SearchEndpoint.configureOnPremiseEndpoint('http://server:8080/Coveo/Rest');
+
+       // Use this code to use a custom endpoint
+       Coveo.Rest.SearchEndpoint.endpoints["default"] = new Coveo.Rest.SearchEndpoint({
+       restUri: 'http://server:8080/Coveo/Rest'
+       });
+
+       */
+
+      $('#search').coveo('init');
+    });
+  </script>
+</head>
+
+<body id="search" class="CoveoSearchInterface coveo-togglable-body coveo-hide-until-loaded" data-hide-until-first-query="false" data-enable-history="true">
+<div class="CoveoFolding"
+     data-field="@sysconversationsubject"
+     data-tab="Email"
+     data-parent-field="@syscontainsattachment"
+     data-child-field="@systopparentid"
+     data-range="0"></div>
+
+<div class="coveo-tab-section">
+  <div class="coveo-logo-section CoveoToggleButton"
+       data-target="coveo-togglable-body"
+       data-toggle-class="coveo-slide-right"
+       data-toggle-glass="true">
+
+    <div class="coveo-logo"></div>
+  </div>
+
+  <div class="coveo-tab-section-spacer">Tabs</div>
+
+  <a class="CoveoTab"
+     data-id="Email"
+     data-caption="Email"
+     data-icon="coveo-sprites-tab-email"
+     data-expression="@sysmailbox"
+     data-sort="date descending"></a>
+</div>
+
+<div class="coveo-search-section">
+  <div class="coveo-searchSectionTabButton CoveoToggleButton"
+       data-target="coveo-togglable-body"
+       data-toggle-class="coveo-slide-right" data-toggle-glass="true">
+    <div class="coveo-search-section-tab-icon"></div>
+  </div>
+
+  <div class="coveo-searchSectionFacetsButton CoveoToggleButton"
+       data-target="coveo-togglable-body"
+       data-toggle-class="coveo-slide-left"
+       data-toggle-glass="true">
+    <div class="coveo-search-section-facets-icon"></div>
+  </div>
+
+  <a class="CoveoSearchButton"></a>
+
+  <div class="coveo-container">
+    <input type="text" class="CoveoQueryBox" autocapitalize="off" autocorrect="off"/>
+  </div>
+</div>
+
+<div class="coveo-results-section">
+  <div class="coveo-facet-column">
+    <div class="coveo-facet-header CoveoToggleButton" data-target="coveo-togglable-body" data-toggle-class="coveo-slide-left" data-toggle-glass="true">
+      <div class="coveo-icon"></div>
+      <div class="coveo-facets-close">Done</div>
+    </div>
+
+    <div class="coveo-facet-container">
+      <div data-tab="Email">
+        <div class="CoveoFacet"
+             data-title="Mailbox"
+             data-field="@sysmailbox"></div>
+
+        <div class="CoveoFacet"
+             data-title="From"
+             data-field="@sysfrom"></div>
+
+        <div class="CoveoFacet"
+             data-title="To"
+             data-field="@systo"></div>
+
+        <div class="CoveoFacet"
+             data-title="File Type"
+             data-field="@sysfiletype"></div>
+
+        <div class="CoveoFacet"
+             data-title="Concepts"
+             data-field="@sysconcepts"
+             data-is-multi-value-field="true"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="coveo-results-column">
+    <div class="CoveoErrorReport"></div>
+    <div class="CoveoDidYouMean"></div>
+
+    <div class="coveo-result-header-section">
+      <div class="CoveoCurrentTab"></div>
+
+      <div class="coveo-sort-section">
+        <span class="CoveoSort" data-sort-criteria="relevancy">Relevance</span>
+        <span class="CoveoSort" data-sort-criteria="date descending,date ascending">Date</span>
+      </div>
+
+      <div class="CoveoBreadcrumb"></div>
+    </div>
+
+    <div class="CoveoResultList" data-wait-animation="fade">
+      <script id="MobileEmailThread" type="text/x-underscore-template">
+        <div class="coveo-email-result">
+          <div class="coveo-email-header">
+            <div class="coveo-email-from">
+              <span class="coveo-icon coveo-sprites-documentType-mail"></span>
+              From:
+              <span class="CoveoFieldValue" data-field="@sysfrom" data-helper="email" data-html-value="true"></span>
+            </div>
+            <div class="coveo-date"><%-date(raw.sysdate, {predefinedFormat: "MMM d"})%></div>
+            <div class="coveo-email-to">
+              To:
+              <span class="CoveoFieldValue" data-field="@sysrecipients" data-helper="email" data-html-value="true"></span>
+            </div>
+
+            <span class="coveo-title">
+              <% if (hasHtmlVersion) { %>
+              <a class="CoveoResultLink" data-open-quickview="true"><%=title?highlight(title,
+                titleHighlights):clickUri%></a>
+              <%= loadTemplate("MobileEmailQuickView") %>
+              <% } else { %>
+              <a class="CoveoResultLink"><%=title?highlight(title, titleHighlights):clickUri%></a>
+              <% } %>
+            </span>
+          </div>
+
+          <div class="coveo-excerpt">
+            <%= highlight(excerpt, excerptHighlights)%>
+          </div>
+
+          <div class="CoveoResultAttachments"
+               data-result-template-id="MobileEmailResultAttachment"></div>
+
+          <div class="CoveoResultFolding"
+               data-result-template-id="MobileEmailChildResult"
+               data-normal-caption="MostRelevantReplies"
+               data-more-caption="ShowAllConversation"
+               data-less-caption="ShowOnlyMostRelevantReplies"></div>
+        </div>
+      </script>
+
+      <script id="MobileEmailChildResult" type="text/x-underscore-template">
+        <div class="coveo-email-header">
+          <span class="coveo-email-from">
+            <span class="CoveoFieldValue" data-field="@sysfrom" data-helper="email" data-html-value="true"></span>
+          </span>
+        </div>
+        <div class="coveo-excerpt">
+          <% if(hasHtmlVersion) { %>
+          <a class="CoveoResultLink" data-open-quickview="true"><%= highlight(firstSentences,
+            firstSentencesHighlights)%></a>
+          <%= loadTemplate("MobileEmailQuickView") %>
+          <% } else { %>
+          <a class="CoveoResultLink"><%= highlight(firstSentences, firstSentencesHighlights)%></a>
+          <% } %>
+        </div>
+        <div class="CoveoResultAttachments" data-result-template-id="MobileEmailResultAttachment"></div>
+      </script>
+
+      <script id="MobileEmailResultAttachment" type="text/x-underscore-template">
+        <% if(Coveo.QueryUtils.hasThumbnail(obj) || hasHtmlVersion ) { %>
+        <div class="coveo-attachment-container">
+          <% if(hasHtmlVersion) { %>
+          <%= fromFileTypeToIcon() %>
+          <a class="CoveoResultLink" data-open-quickview="true"><%= title || clickUri %></a>
+          <%= loadTemplate("MobileEmailQuickView") %>
+          <% } else if(Coveo.QueryUtils.hasThumbnail(obj)) { %>
+          <%= thumbnail() %>
+          <% } %>
+        </div>
+        <% } %>
+      </script>
+
+      <script id="MobileEmailQuickView" type="text/x-underscore-template">
+        <div class="CoveoQuickView" data-title="<%= attrEncode(fromFileTypeToIcon(obj) + title) %>" data-template-id="MobileEmailQuickViewContent">
+        </div>
+      </script>
+
+      <script id="MobileEmailQuickViewContent" type="text/x-underscore-template">
+        <div class="coveo-quick-view-header coveo-quick-view-header-mobile-email">
+          <div class="coveo-date"><%-dateTime(raw.sysdate)%></div>
+          <div class="coveo-email-from">
+            From:
+            <span class="CoveoFieldValue" data-field="@sysfrom" data-helper="email" data-html-value="true"></span>
+          </div>
+
+          <div class="coveo-email-to">
+            To:
+            <span class="CoveoFieldValue" data-field="@sysrecipients" data-helper="email" data-html-value="true"></span>
+          </div>
+        </div>
+        <div class="CoveoEmailActions"></div>
+        <div class="CoveoQuickViewDocument"></div>
+      </script>
+
+      <script class="result-template" type="text/x-underscore-template">
+        <%=
+        loadTemplates({
+        "MobileEmailThread" : raw.sysmailbox != undefined
+        })
+        %>
+      </script>
+    </div>
+
+    <div class="CoveoPager" data-number-of-pages="3"></div>
+    <div class="CoveoQuerySummary"></div>
+  </div>
+</div>
+</body>
+
+</html>

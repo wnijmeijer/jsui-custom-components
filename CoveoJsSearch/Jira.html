@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Jira Search</title>
+  <meta about="Search Jira content"/>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0,  maximum-scale=1.0, user-scalable=0">
+  <script src="js/CoveoJsSearch.WithDependencies.js"></script>
+  <script src="js/d3.js"></script>
+  <link rel="stylesheet" href="css/CoveoFullSearch.css"/>
+
+  <script type="text/javascript">
+    $(function () {
+      Coveo.Rest.SearchEndpoint.configureSampleEndpoint();
+
+      /*
+
+      // Use this code to use a cloud index
+      Coveo.Rest.SearchEndpoint.configureCloudEndpoint('OrganizationName');
+
+      // Use this code to use an on-premise index
+      Coveo.Rest.SearchEndpoint.configureOnPremiseEndpoint('http://server:8080/Coveo/Rest');
+
+      // Use this code to use a custom endpoint
+      Coveo.Rest.SearchEndpoint.endpoints["default"] = new Coveo.Rest.SearchEndpoint({
+      restUri: 'http://server:8080/Coveo/Rest'
+      });
+
+      */
+
+  $('#search').coveo('init');
+  });
+  </script>
+</head>
+
+<body id="search" class='CoveoSearchInterface' data-enable-history="true">
+
+<div class="CoveoFolding"
+     data-field="@jiissueid"
+     data-expand-expression="@jidocumenttype==Attachment"
+     data-tab="Jira"
+     data-parent-field="@jiid"
+     data-child-field="@jiparentissueid"
+     data-range="10">
+</div>
+
+<div class="coveo-tab-section">
+  <a class="CoveoTab"
+     data-id="Jira"
+     data-caption="Jira"
+     data-icon="coveo-sprites-tab-jira"
+     data-expression='@jisourcetype AND NOT @jidocumenttype="WorkLog"'></a>
+  <a class="CoveoTab"
+     data-id="JiraWorkLog"
+     data-caption="WorkLog"
+     data-icon="coveo-sprites-tab-jira"
+     data-expression='@jidocumenttype="WorkLog"'></a>
+</div>
+
+<div class="coveo-search-section">
+  <div class="coveo-logo-column">
+    <div class="coveo-logo"></div>
+  </div>
+  <div class="coveo-searchBox-column">
+    <div class="coveo-search-section-wrapper">
+      <div class="CoveoSettings" data-include-in-menu=".CoveoShareQuery,.CoveoPreferencesPanel"></div>
+      <div class="CoveoSearchBox" data-activate-omnibox="true"></div>
+    </div>
+  </div>
+</div>
+
+<div class="coveo-results-section">
+  <div class="coveo-facet-column">
+    <div data-tab="Jira">
+      <div class="CoveoFacet" data-title="Type" data-field="@jidocumenttype"></div>
+      <div class="CoveoFacet" data-title="Project" data-field="@jiprojectname"></div>
+      <!--Will work only with issue-->
+      <div class='CoveoFacet' data-title='Assignee' data-field='@jifieldsassigneedisplayname'></div>
+      <div class='CoveoFacet' data-title='Reporter' data-field='@jifieldsreporterdisplayname'></div>
+      <div class="CoveoFacet" data-title="Issue type" data-field="@jifieldsissuetypename"></div>
+      <div class="CoveoFacet" data-title="Author" data-field="@jiauthordisplayname"></div>
+      <div class="CoveoFacet" data-title="Update Author" data-field="@jiupdateauthordisplayname"></div>
+      <div class='CoveoFacet' data-title='Commenter' data-field='@jifieldscommentcommentsauthordisplayname'></div>
+      <div class='CoveoFacet' data-title='Links' data-field='@jifieldsissuelinkstypename'></div>
+      <div class='CoveoFacet' data-title='Outward links' data-field='@jifieldsissuelinkstypeoutward'></div>
+      <div class='CoveoFacet' data-title='Inward links' data-field='@jifieldsissuelinkstypeinward'></div>
+      <!--Will work only with bug issue-->
+      <div class='CoveoFacet' data-title='Fix Version/s' data-field='@jifieldsfixversionsname'></div>
+      <div class='CoveoFacet' data-title='Version' data-field='@jifieldsversionsname'></div>
+      <!--Will work only with issue-->
+      <div class='CoveoFacet' data-title='Label' data-field='@jifieldslabels' data-allow-toggling-operator='true' data-is-multi-value='true'></div>
+      <div class='CoveoFacet' data-title='Status' data-field='@jifieldsstatusname' data-allow-toggling-operator='true' data-is-multi-value='true'></div>
+      <div class="CoveoFacet" data-title="Priority" data-field="@jifieldspriorityname"></div>
+    </div>
+    <div data-tab="JiraWorkLog">
+      <div class="CoveoFacet" data-title="Author" data-field="@jiauthordisplayname"></div>
+      <div class="CoveoFacet" data-title="Update Author" data-field="@jiupdateauthordisplayname"></div>
+      <div class="CoveoFacet" data-title="Issue" data-field="@jiissuename"></div>
+      <div class="CoveoFacet" data-title="Issue type" data-field="@jifieldsissuetypename"></div>
+      <div class="CoveoFacet" data-title="Project" data-field="@jiprojectname"></div>
+    </div>
+  </div>
+
+  <div class="coveo-results-column">
+    <div class="CoveoShareQuery"></div>
+    <div class="CoveoPreferencesPanel">
+      <div class="CoveoResultsPreferences"></div>
+      <div class="CoveoResultsFiltersPreferences"></div>
+    </div>
+    <div class="CoveoBreadcrumb"></div>
+
+    <div class="coveo-results-header">
+      <div class="coveo-summary-section">
+        <span class="CoveoQuerySummary"></span>
+        <span class="CoveoQueryDuration"></span>
+      </div>
+      <div class="coveo-sort-section">
+        <span class="CoveoSort" data-sort-criteria="relevancy">Relevance</span>
+        <span class="CoveoSort" data-sort-criteria="date descending,date ascending">Date</span>
+      </div>
+      <div class="coveo-clear"></div>
+    </div>
+
+    <div class="CoveoHiddenQuery"></div>
+    <div class="CoveoDidYouMean"></div>
+    <div class="CoveoErrorReport" data-pop-up="false"></div>
+
+    <div class="CoveoResultList" data-wait-animation="fade">
+      <script id="Jira" type="text/x-underscore-template">
+        <%= fromFileTypeToIcon(obj) %>
+
+        <div class="coveo-date"><%-dateTime(raw.sysdate)%></div>
+
+        <div class="coveo-title">
+          <a class="CoveoResultLink" ><%=title?highlight(title, titleHighlights):clickUri%></a>
+
+          <%= loadTemplate("JiraQuickView") %>
+        </div>
+
+        <div class="coveo-excerpt">
+          <%=highlight(excerpt, excerptHighlights)%>
+        </div>
+
+        <div class='CoveoResultAttachments' data-result-template-id="JiraAttachment"></div>
+
+        <div class="CoveoPrintableUri"></div>
+
+        <table class="CoveoFieldTable">
+          <tr data-field="@jikey" data-caption="Key" />
+          <!--Issue-->
+          <tr data-field='@jifieldsprojectname' data-caption='Project name' />
+          <tr data-field='@jifieldsissuetypename' data-caption='Issue type' />
+          <tr data-field='@jifieldstimetrackingoriginalestimatehours' data-caption='Time tracking Estimated' />
+          <tr data-field='@jifieldstimetrackingremainingestimatehours' data-caption='Time tracking Remaining' />
+          <tr data-field='@jifieldstimetrackingtimespenthours' data-caption='Time tracking Logged' />
+          <tr data-field='@jifieldspriorityname' data-caption='Priority' />
+          <tr data-field='@jifieldsversionsname' data-caption='Version' />
+          <tr data-field='@jifieldslabels' data-caption='Labels' />
+          <tr data-field='@jifieldsenvironment' data-caption='Environment' />
+          <tr data-field='@jifieldsstatusname' data-caption='Status' />
+          <tr data-field='@jifieldsReporterDisplayName' data-caption='Reporter' />
+          <tr data-field='@jifieldsAssigneeDisplayName' data-caption='Assignee' />
+          <tr data-field='@jifieldsfixVersionsname' data-caption='Fix Vesions' />
+          <tr data-field='@jifieldsresolution' data-caption='Resolution' />
+          <tr data-field='@jifieldscreated' data-helper='dateTime' data-caption='Created Date' />
+          <tr data-field='@jifieldsupdated' data-helper='dateTime' data-caption='Updated Date' />
+          <tr data-field='@jifieldsduedate' data-helper='dateTime' data-caption='Due Date' />
+          <tr data-field='@jifieldsissuelinkstypename' data-caption='Links' />
+          <tr data-field='@jifieldsissuelinkstypeoutward' data-caption='Outward links' />
+          <tr data-field='@jifieldsissuelinkstypeinward' data-caption='Inward links' />
+          <!--Common to Attachment and Worklog-->
+          <tr data-field='@jiprojectname' data-caption='Project name' />
+          <tr data-field='@jiissuename' data-caption='Issue name' />
+          <tr data-field='@jiauthordisplayname' data-caption='Author' /><!--BUG it is already present for an attachment-->
+          <!--Attachment-->
+          <!--BUG a concepts is displayed but we dont went to.-->
+          <tr data-field='@jisize' data-caption='Size' />
+          <!--Worklog and Comment-->
+          <tr data-field='@jiupdateauthordisplayname' data-caption='Update Author' />
+          <tr data-field='@jicreated' data-helper='dateTime' data-caption='Created Date' />
+          <tr data-field='@jiupdated' data-helper='dateTime' data-caption='Updated Date' />
+          <!--Comment-->
+          <tr data-field='@jibody' data-caption='Comment' />
+          <!--Worklog-->
+          <tr data-field='@jistarted' data-helper='dateTime' data-caption='Started Date' />
+          <tr data-field='@jitimespent' data-caption='TimeSpent' />
+          <tr data-field='@jicomment' data-caption='Comment' />
+        </table>
+      </script>
+
+      <script id="JiraAttachment" type="text/x-underscore-template">
+        <div class="coveo-attachment-container">
+          <%= fromFileTypeToIcon() %>
+          <a class="CoveoResultLink"><%= title || clickUri %></a>
+          <% if(Coveo.QueryUtils.hasThumbnail(obj)){ %> <span class="coveo-thumbnail-icon"><%= thumbnail() %></span><% }
+          %>
+          <%= loadTemplate("JiraQuickView") %>
+        </div>
+      </script>
+
+      <script id="JiraQuickView" type="text/x-underscore-template">
+        <div class="CoveoQuickView" data-title="<%= attrEncode(fromFileTypeToIcon(obj) + title) %>" data-fixed="true" data-template-id="JiraQuickViewContent">
+        </div>
+      </script>
+
+      <script id="JiraQuickViewContent" type="text/x-underscore-template">
+        <div class="coveo-quick-view-header">
+          <table class="CoveoFieldTable">
+            <tr data-field="@sysdate" data-caption="Date" data-helper="dateTime"></tr>
+            <tr data-field="@objecttype" data-caption="Type"></tr>
+          </table>
+        </div>
+        <div class="CoveoQuickViewDocument"></div>
+      </script>
+
+      <script class="result-template" type="text/x-underscore-template">
+        <%=
+        loadTemplates({
+        'Jira' : raw.sysconnectortype == 'JiraCrawler'
+        })
+        %>
+      </script>
+    </div>
+    <div class="CoveoPager"></div>
+  </div>
+</div>
+</body>
+
+</html>
