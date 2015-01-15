@@ -1,6 +1,6 @@
 // # CoveoPopularQuerier
 //
-// A component that queries and doesnt show results, instead it launches and event (`dataloaded`)
+// A component that queries and doesnt show results, instead it triggers and event (`dataloaded`)
 // which gives you an array of objects:
 // ```json
 // [

@@ -1,4 +1,3 @@
-
        88                       88  
        ""                       ""  
 
@@ -11,11 +10,33 @@
     888P"    - Custom components
 
 
-Custom components made for [coveo jsui](https://developers.coveo.com/display/JsSearch/Home),
+Custom components made for [Coveo jsui framework](https://developers.coveo.com/display/JsSearch/Home),
  some of them may require tweaking / additionnal scripting or even whole styling.
 
 
 ## Components
+
+- [CoveoPopularQuerier](#coveopopularquerier)
+- [CoveoSimpleRelatedResults](#coveosimplerelatedresults)
+
+### CoveoPopularQuerier
+
+A component that queries and doesnt show results, instead it triggers and event (`dataloaded`)
+which gives you an array of objects:
+
+```json
+[
+ ...,
+ {
+ "field": "@txtannovtheme",
+ "value": "Inspection",
+ "score": 18172
+  },
+  ...
+]
+```
+
+
 
 ### CoveoSimpleRelatedResults
 
