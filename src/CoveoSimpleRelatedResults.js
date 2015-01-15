@@ -1,6 +1,6 @@
-// # CoveoRelatedResult
+// # CoveoSimpleRelatedResult
 //
-// CoveoRelatedResults makes a query similar to a CoveoFacet but can be provided additionnal query parameters or completly new ones.
+// CoveoSimpleRelatedResults makes a query similar to a CoveoFacet but can be provided additionnal query parameters or completly new ones.
 // This components makes a completly new query using groupBy component of the coveo searchApi, it doesnt use the current query so
 // if you want less httprequests and more performance some tweaking will be needed.
 // This Component acts almost like a facet, in some case a CoveoFacet may be a better use
@@ -8,7 +8,7 @@
 
 // ## Usage Example:
 // ```html
-// <div class="CoveoRelatedResults"
+// <div class="CoveoSimpleRelatedResults"
 // data-expression="@syssource==Descriptions OR @syssource==Comments  OR @syssource==Resolutions"
 // data-template="#template"
 // data-coveo-root="#search"
@@ -30,9 +30,9 @@
 // ```
 
 // ## Manual Creation
-// You can also manually create a CoveoRelatedResults component
+// You can also manually create a CoveoSimpleRelatedResults component
 // ```js
-//  var component = new CoveoRelatedResults(e,{
+//  var component = new CoveoSimpleRelatedResults(e,{
 //    root:"#search",
 //    resultTemplate:"#template",
 //    hiddenExpression:"@syssource==Descriptions",
@@ -42,15 +42,15 @@
 // });
 // ```
 
-var CoveoRelatedResults = function(element, options) {
+var CoveoSimpleRelatedResults = function(element, options) {
   this.element = element;
-  this.root =  options.root || element.getAttribute('data-coveo-search') || document.getElementsByClassName('CoveoSearchInterface');
+  this.root = options.root || element.getAttribute('data-coveo-search') || document.getElementsByClassName('CoveoSearchInterface');
   this.options = options;
   this.resultTemplate = _.template($(this.options.resultTemplate).text());
   this.content = $('<div></div>').appendTo($(this.element));
   this.bindEvents();
 }
-CoveoRelatedResults.prototype.bindEvents = function() {
+CoveoSimpleRelatedResults.prototype.bindEvents = function() {
   var _this = this;
 
   $(this.root).on(Coveo.Events.QueryEvents.doneBuildingQuery, function(e, args) {
@@ -58,15 +58,18 @@ CoveoRelatedResults.prototype.bindEvents = function() {
     _this.fetchNewResults(expression, args);
   });
 }
-CoveoRelatedResults.prototype.fetchNewResults = function(expression, args) {
+CoveoSimpleRelatedResults.prototype.fetchNewResults = function(expression, args) {
   var _this = this;
 
   var expressions = [];
 
   _.each([args.queryBuilder.advancedExpression.build(),
-          args.queryBuilder.expression.build(),
-          _this.options.hiddenExpression],function(exp){
-    if(exp && !Coveo._.isEmpty(exp)){expressions.push("("+exp+")")}
+    args.queryBuilder.expression.build(),
+    _this.options.hiddenExpression
+  ], function(exp) {
+    if (exp && !Coveo._.isEmpty(exp)) {
+      expressions.push("(" + exp + ")")
+    }
   })
 
 
@@ -81,7 +84,7 @@ CoveoRelatedResults.prototype.fetchNewResults = function(expression, args) {
     //query.q="";
     query["groupBy"] = [{
       "field": _this.options.groupBy,
-      "sortCriteria": _this.options.sortBy || "occurences",
+      "sortCriteria": _this.options.sortBy ||  "occurences",
       "queryOverride": expressions.join(" AND "),
       "injectionDepth": 1000,
       "maximumNumberOfValues": _this.options.numberOfResults || "5"
@@ -104,16 +107,16 @@ CoveoRelatedResults.prototype.fetchNewResults = function(expression, args) {
 }
 
 $(function() {
-  var relatedResults = document.getElementsByClassName('CoveoRelatedResults');
+  var relatedResults = document.getElementsByClassName('CoveoSimpleRelatedResults');
   _.each(relatedResults, function(e) {
     var options = {
-      root:e.getAttribute('data-coveo-root'),
-      resultTemplate:e.getAttribute('data-template'),
-      hiddenExpression:e.getAttribute('data-expression'),
-      sortBy:e.getAttribute('data-sort-by'),
-      groupBy:e.getAttribute('data-group-by'),
-      numberOfResults:e.getAttribute('data-number-of-results')
+      root: e.getAttribute('data-coveo-root'),
+      resultTemplate: e.getAttribute('data-template'),
+      hiddenExpression: e.getAttribute('data-expression'),
+      sortBy: e.getAttribute('data-sort-by'),
+      groupBy: e.getAttribute('data-group-by'),
+      numberOfResults: e.getAttribute('data-number-of-results')
     }
-    new CoveoRelatedResults(e,options);
+    new CoveoSimpleRelatedResults(e, options);
   });
 });
