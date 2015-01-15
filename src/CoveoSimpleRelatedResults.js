@@ -5,7 +5,6 @@
 // if you want less httprequests and more performance some tweaking will be needed.
 // This Component acts almost like a facet, in some case a CoveoFacet may be a better use
 
-
 // ## Usage Example:
 // ```html
 // <div class="CoveoSimpleRelatedResults"
