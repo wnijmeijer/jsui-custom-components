@@ -42,8 +42,14 @@
 // ```
 
 var CoveoSimpleRelatedResults = function(element, options) {
+  if (!(this instanceof CoveoSimpleRelatedResults)){
+    return new CoveoSimpleRelatedResults(element, options);
+  }
+
   this.element = element;
-  this.root = options.root || element.getAttribute('data-coveo-search') || document.getElementsByClassName('CoveoSearchInterface');
+  this.root = options.root
+            || element.getAttribute('data-coveo-search')
+            || document.getElementsByClassName('CoveoSearchInterface');
   this.options = options;
   this.resultTemplate = _.template($(this.options.resultTemplate).text());
   this.content = $('<div></div>').appendTo($(this.element));

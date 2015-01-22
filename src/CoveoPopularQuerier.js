@@ -1,3 +1,8 @@
+/* jshint undef:true, eqeqeq:true, curly:true, strict:true, laxbreak: true, laxcomma: true */
+/* global Coveo, document */
+
+(function($,_,undefined){
+  "use strict";
 // # CoveoPopularQuerier
 //
 // A component that queries and doesnt show results, instead it triggers and event (`dataloaded`)
@@ -16,79 +21,67 @@
 // And the query that was run to obtain those objects (in case you want to do other queries based on that)
 
 
-// ## Usage:
-// <span id="popularquerier" class="CoveoPopularQuerier"
-// data-hidden-expression="@syssource==Descriptions OR @syssource==Comments"
-// data-coveo-search="#search" data-number-of-results="5"
-// data-field="@txtannovtheme" ></span>
+// Options: {
+//   searchInterface: "#search"
+//   , numberOfResults: 5
+//   , sortCriteria: "ChiSquare"
+//   , debug : false
+//   , opts.queryField
+//   , onLoaded :function(results,queryArgs){}
+// }
 
-// $(function() {
-//   $("#popularquerier").on("dataloaded", function(e, results,query) {
-//     console.log(results,query.queryBuilder.build());
-//   });
-// });
-
-
-var CoveoPopularQuerier = function(element, root) {
-  var _this = this;
-  this.element = element;
-  this.popular = [];
-  this.root = root || element.getAttribute('data-coveo-search') || document.getElementsByClassName('CoveoSearchInterface');
-
-  this.numberOfResults = element.getAttribute('data-number-of-results') || 5;
-  this.field = element.getAttribute('data-field') || 'syscollection';
-  this.hiddenExpression = element.getAttribute('data-hidden-expression');
-
-  $(this.root).on(Coveo.Events.QueryEvents.doneBuildingQuery, function(e, args) {
-
-    var queryBuilder = new Coveo.Ui.QueryBuilder();
-    var expression = args.queryBuilder.build();
-
-    _this.fetchNewResults(expression, args);
-  });
-}
-
-CoveoPopularQuerier.prototype.fetchNewResults = function(expression, args) {
-  var _this = this;
-
-  var expressions = [];
-
-  _.each([_this.hiddenExpression,expression.q,expression.aq],function(exp){
-    if(exp){expressions.push("("+exp+")")}
-  })
-
-  var query = {
-    q: "",
-    numberOfResults: 0,
-    groupBy: [{
-      field: _this.field,
-      sortCriteria: "ChiSquare",
-      injectionDepth: 1000,
-      queryOverride: expressions.length === 0 ? undefined : expressions.join(" AND "),
-      maximumNumberOfValues: this.numberOfResults
-    }]
+function CoveoPopularQuerier(options){
+  if(!(this instanceof CoveoPopularQuerier)){
+    return new CoveoPopularQuerier();
   }
 
-  Coveo.Rest.SearchEndpoint.endpoints["default"].search(query).done(function(data) {
-    if (data.groupByResults && !Coveo._.isEmpty(data.groupByResults)) {
-      var results = _.map(data.groupByResults[0].values, function(v) {
-        return {
-          field: _this.field,
-          value: v.value,
-          score: v.numberOfResults
-        }
-      });
-      this.popular = results;
-      $(_this.element).trigger("dataloaded", [results,args]);
+  var groupByIndex = -1;
+
+  var opts = _.defaults(options, {
+    searchInterface: "#search"
+  , numberOfResults: 5
+  , sortCriteria: "ChiSquare"
+  , debug : false
+  });
+
+  $(opts.searchInterface).on(Coveo.Events.QueryEvents.doneBuildingQuery, function(e,args){
+    groupByIndex = args.queryBuilder.groupByRequests.length;
+
+    var groupByReq = {
+        field: opts.queryField
+      , sortCriteria: opts.sortCriteria
+      , injectionDepth: opts.injectionDepth
+    };
+    args.queryBuilder.groupByRequests.push(groupByReq);
+  });
+
+  $(opts.searchInterface).on(Coveo.Events.QueryEvents.querySuccess,function(e,args){
+    if( groupByIndex === -1 || args.results.groupByResults === 0 ){
+      return;
     }
+
+    var results = _.map(args.results.groupByResults,function(v){
+      return {
+        field:opts.queryField.substr(1),
+        value:v.value,
+        score:v.numberOfResults
+      };
+    });
+
+      opts.onLoaded(results,args);
   });
 }
 
 
-// Auto-Init popular querier
-$(function() {
-  var popularQueriers = document.getElementsByClassName('CoveoPopularQuerier');
-  _.each(popularQueriers, function(popularQuerier) {
-    new CoveoPopularQuerier(popularQuerier);
+  // Auto Initializer (from dom-elements)
+  $(function() {
+    var popularQueriers = document.getElementsByClassName('CoveoPopularQuerier');
+    _.each(popularQueriers, function(popularQuerier) {
+      var options = {};
+
+      // TODO: We need to transform data-properties to options object
+      new CoveoPopularQuerier(options);
+    });
   });
-});
+
+})(Coveo.$,Coveo._,undefined);
