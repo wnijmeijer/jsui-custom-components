@@ -1,5 +1,5 @@
 /* jshint undef:true, eqeqeq:true, curly:true, strict:true, laxbreak: true, laxcomma: true */
-/* global Coveo */
+/* global Coveo,window */
 
 (function($,_,undefined){
   "use strict";
@@ -83,4 +83,5 @@
       }
     });
   }
+  window.CoveoRelatedResults = CoveoRelatedResults;
 })(Coveo.$,Coveo._,undefined);

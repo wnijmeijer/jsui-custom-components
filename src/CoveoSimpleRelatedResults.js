@@ -1,127 +1,66 @@
-// # CoveoSimpleRelatedResult
-//
-// CoveoSimpleRelatedResults makes a query similar to a CoveoFacet but can be provided additionnal query parameters or completly new ones.
-// This components makes a completly new query using groupBy component of the coveo searchApi, it doesnt use the current query so
-// if you want less httprequests and more performance some tweaking will be needed.
-// This Component acts almost like a facet, in some case a CoveoFacet may be a better use
+/* jshint undef:true, eqeqeq:true, curly:true, strict:true, laxbreak: true, laxcomma: true */
+/* global Coveo, window */
+(function(Coveo, $, _, undefined) {
+  "use strict";
 
-// ## Usage Example:
-// ```html
-// <div class="CoveoSimpleRelatedResults"
-// data-expression="@syssource==Descriptions OR @syssource==Comments  OR @syssource==Resolutions"
-// data-template="#template"
-// data-coveo-root="#search"
-// data-sort-by="ChiSquare"
-// data-group-by="@txtannovtheme"
-// data-number-of-results="8"
-// ></div>
-// ```
+  // # CoveoSimpleRelatedResult
+  //
+  // CoveoSimpleRelatedResults makes a query similar to a CoveoFacet but can be provided additionnal query parameters or completly new ones.
+  // This components makes a completly new query using groupBy component of the coveo searchApi, it doesnt use the current query so
+  // if you want less httprequests and more performance some tweaking will be needed.
+  // This Component acts almost like a facet, in some case a CoveoFacet may be a better use
 
-// ## Example Template:
-// ```html
-// <script id="related-themes-template" type="text/x-underscore-template">
-//   <a class="related-result__result related-result__result--tag"
-//      href='#q=@txtantheme%3D%3D"<%=value %>"'>
-//        <%= value %>
-//        <span class="related-result__value"><%= numberOfResults %></span>
-//   </a>
-// </script>
-// ```
+  // Options: {
+  //   searchInterface:"#search", // The coveo Search Interface selector
+  //   containerselector:"",      // The container for storing your results
+  //   templateSelector:"",       // The template for each result shown
+  //   queryField:"",             // The field on your local elements which will match remote (related) elements
+  //   numberOfResults:5,         // The number of Related results you want
+  //   debug : false              // If you want some debug output
+  //  }
 
-// ## Manual Creation
-// You can also manually create a CoveoSimpleRelatedResults component
-// ```js
-//  var component = new CoveoSimpleRelatedResults(e,{
-//    root:"#search",
-//    resultTemplate:"#template",
-//    hiddenExpression:"@syssource==Descriptions",
-//    sortBy:"ChiSquare",
-//    groupBy:"@txtannovtheme",
-//    numberOfResults:8
-// });
-// ```
-
-var CoveoSimpleRelatedResults = function(element, options) {
-  if (!(this instanceof CoveoSimpleRelatedResults)){
-    return new CoveoSimpleRelatedResults(element, options);
-  }
-
-  this.element = element;
-  this.root = options.root
-            || element.getAttribute('data-coveo-search')
-            || document.getElementsByClassName('CoveoSearchInterface');
-  this.options = options;
-  this.resultTemplate = _.template($(this.options.resultTemplate).text());
-  this.content = $('<div></div>').appendTo($(this.element));
-  this.bindEvents();
-}
-CoveoSimpleRelatedResults.prototype.bindEvents = function() {
-  var _this = this;
-
-  $(this.root).on(Coveo.Events.QueryEvents.doneBuildingQuery, function(e, args) {
-    var expression = args.queryBuilder.expression.build();
-    _this.fetchNewResults(expression, args);
-  });
-}
-CoveoSimpleRelatedResults.prototype.fetchNewResults = function(expression, args) {
-  var _this = this;
-
-  var expressions = [];
-
-  _.each([args.queryBuilder.advancedExpression.build(),
-    args.queryBuilder.expression.build(),
-    _this.options.hiddenExpression
-  ], function(exp) {
-    if (exp && !Coveo._.isEmpty(exp)) {
-      expressions.push("(" + exp + ")")
+  var CoveoSimpleRelatedResults = function(opts){
+    if(!(this instanceof CoveoSimpleRelatedResults)){
+      return new CoveoSimpleRelatedResults();
     }
-  })
 
+    var groupByIndex=-1;
+    var lastGroupByResults = [];
 
-  var query = {
-    q: expressions.join(" AND "),
-    numberOfResults: _this.options.numberOfResults
-  }
+    var resultTemplate = _.template($(opts.templateSelector).text());
+    var contentContainer  = $('<div></div>').appendTo($(opts.containerSelector));
 
-
-  if (_this.options.groupBy) {
-    query.numberOfResults = 0;
-    //query.q="";
-    query["groupBy"] = [{
-      "field": _this.options.groupBy,
-      "sortCriteria": _this.options.sortBy ||  "occurences",
-      "queryOverride": expressions.join(" AND "),
-      "injectionDepth": 1000,
-      "maximumNumberOfValues": _this.options.numberOfResults || "5"
-    }];
-  }
-
-
-  Coveo.Rest.SearchEndpoint.endpoints["default"].search(query).done(function(data) {
-    _this.content.empty();
-    if (data.groupByResults && !Coveo._.isEmpty(data.groupByResults)) {
-      _.each(data.groupByResults[0].values.slice(0, _this.options.numberOfResults), function(value, index) {
-        _this.content.append(_this.resultTemplate(value));
+    // Get the related elements in the current Query by appending
+    // to groupBy and getting new results (like facets)
+    $(opts.searchInterface).on(Coveo.Events.QueryEvents.doneBuildingQuery, function(e,args){
+      groupByIndex = args.queryBuilder.groupByRequests.length;
+      args.queryBuilder.groupByRequests.push({
+        field: opts.queryField
+        , sortCriteria : opts.sortCriteria || "ChiSquare"
+        , maximumNumberOfValues : opts.NumberOfResults
+        , injectionDepth: 1000
       });
-    } else {
-      _.each(data.results, function(result, index) {
-        _this.content.append(_this.resultTemplate(result));
-      });
-    };
-  });
-}
+    });
 
-$(function() {
-  var relatedResults = document.getElementsByClassName('CoveoSimpleRelatedResults');
-  _.each(relatedResults, function(e) {
-    var options = {
-      root: e.getAttribute('data-coveo-root'),
-      resultTemplate: e.getAttribute('data-template'),
-      hiddenExpression: e.getAttribute('data-expression'),
-      sortBy: e.getAttribute('data-sort-by'),
-      groupBy: e.getAttribute('data-group-by'),
-      numberOfResults: e.getAttribute('data-number-of-results')
-    }
-    new CoveoSimpleRelatedResults(e, options);
-  });
-});
+    $(opts.searchInterface).on(Coveo.Events.QueryEvents.querySuccess,function(e,args){
+      contentContainer.empty();
+
+      if( groupByIndex === -1 || args.results.groupByResults === 0 ){
+        return;
+      }
+
+      var results = _.map(args.results.groupByResults,function(v){
+        return {
+          field:opts.queryField.substr(1),
+          value:v.value,
+          score:v.numberOfResults
+        };
+      });
+
+      _.forEach(results,function(result){
+        contentContainer.append(resultTemplate(result));
+      });
+    });
+  };
+
+})(Coveo, Coveo.$, Coveo._);

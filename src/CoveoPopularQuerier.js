@@ -1,11 +1,11 @@
 /* jshint undef:true, eqeqeq:true, curly:true, strict:true, laxbreak: true, laxcomma: true */
-/* global Coveo, document */
+/* global Coveo, document,window */
 
 (function($,_,undefined){
   "use strict";
 // # CoveoPopularQuerier
 //
-// A component that queries and doesnt show results, instead it triggers and event (`dataloaded`)
+// A component that queries and doesnt show results, instead it triggers a callback
 // which gives you an array of objects:
 // ```json
 // [
@@ -26,8 +26,8 @@
 //   , numberOfResults: 5
 //   , sortCriteria: "ChiSquare"
 //   , debug : false
-//   , opts.queryField
-//   , onLoaded :function(results,queryArgs){}
+//   , opts.queryField : "@thefield"
+//   , onLoaded :function(results,queryArgs){} // the callback
 // }
 
 function CoveoPopularQuerier(options){
@@ -74,14 +74,16 @@ function CoveoPopularQuerier(options){
 
 
   // Auto Initializer (from dom-elements)
-  $(function() {
-    var popularQueriers = document.getElementsByClassName('CoveoPopularQuerier');
-    _.each(popularQueriers, function(popularQuerier) {
-      var options = {};
+  // $(function() {
+  //   var popularQueriers = document.getElementsByClassName('CoveoPopularQuerier');
+  //   _.each(popularQueriers, function(popularQuerier) {
+  //     var options = {};
+  //
+  //     // TODO: We need to transform data-properties to options object
+  //     new CoveoPopularQuerier(options);
+  //   });
+  // });
 
-      // TODO: We need to transform data-properties to options object
-      new CoveoPopularQuerier(options);
-    });
-  });
 
+  window.CoveoPopularQuerier = CoveoPopularQuerier;
 })(Coveo.$,Coveo._,undefined);

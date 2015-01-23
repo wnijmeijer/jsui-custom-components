@@ -35,6 +35,7 @@ which gives you an array of objects:
   ...
 ]
 ```
+
 Usage (with jquery):
 
 ```js
@@ -59,3 +60,12 @@ CoveoRelatedResults makes two queries, one to get the list related elements and
 the second one to actually get the information about the related elements which
 usually are of another type.
 ![CoveoRelatedResults.js Example](doc/CoveoRelatedResults.js.jpg)
+
+
+### CoveoQEXRelatedResults
+
+Like [CoveoRelatedResults](#coveorelatedresults), this one is using only
+[query extension language](https://developers.coveo.com/display/SearchREST/Query+Extension+Language)
+
+
+### CoveoTimeGraph
