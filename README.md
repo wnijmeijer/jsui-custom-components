@@ -18,6 +18,9 @@ Custom components made for [Coveo jsui framework](https://developers.coveo.com/d
 
 - [CoveoPopularQuerier](#coveopopularquerier)
 - [CoveoSimpleRelatedResults](#coveosimplerelatedresults)
+- [CoveoRelatedResults](#coveorelatedresults)
+- [CoveoQEXRelatedResults](#coveoqexrelatedresults)
+- [CoveoTimeGraph](#coveotimegraph)
 
 ### CoveoPopularQuerier
 
