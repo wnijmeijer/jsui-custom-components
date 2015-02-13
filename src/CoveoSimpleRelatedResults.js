@@ -63,4 +63,5 @@
     });
   };
 
+  window.CoveoSimpleRelatedResults = CoveoSimpleRelatedResults;
 })(Coveo, Coveo.$, Coveo._);
