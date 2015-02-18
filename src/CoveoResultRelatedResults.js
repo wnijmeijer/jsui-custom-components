@@ -101,10 +101,13 @@ var Coveo;
 				{
 				   this.noResultsCaption.show();
 				}
-                if (true) {
-                    this.showMore.fastToggle(!this.showingMoreResults);
-                    this.showLess.fastToggle(this.showingMoreResults);
-                }
+				if (!this.options.alwaysShow)
+				{
+					if (true) {
+						this.showMore.fastToggle(!this.showingMoreResults);
+						this.showLess.fastToggle(this.showingMoreResults);
+					}
+				}
                 Coveo.$(this.element).find('.coveo-show-if-normal').fastToggle(!this.showingMoreResults);
                 Coveo.$(this.element).find('.coveo-show-if-expanded').fastToggle(this.showingMoreResults);
             };
