@@ -82,6 +82,7 @@ Here you can use your own query with results from the current result.
 Query can be constructed like: @sysauthor='[FIELD1]' @syslanguage='[FIELD2]'
 Then the fields section will look like: sysauthor;syslanguage
 Show Always will always show the related section, without the need to open it.
+```js
 <div class="CoveoResultsRelated"
                data-result-template-id="RelatedResultsTemplate"
                data-normal-caption="Show Related Files"
@@ -91,6 +92,7 @@ Show Always will always show the related section, without the need to open it.
 			   data-query="@sysauthor=[FIELD1]"
 			   data-fields="sysauthor" 
 			   data-number-Of-Results=5 ></div>
+```
 			   
 ### CoveoGoogleMap
 Will show a googlemap with all the results plotted on it. It assume's there are two fields containing the lat/lon.
