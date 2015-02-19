@@ -71,24 +71,22 @@ var Coveo;
             ResultsRelated.prototype.buildFooter = function () {
                 var _this = this;
                 var footer = Coveo.$('<div/>').addClass('coveo-folding-footer').appendTo(this.element.parentElement);
-                if (true) {
-                    this.showMore = Coveo.$("<div/>").addClass("coveo-folding-footer-section-for-less").appendTo(footer).fastClick(function () { return _this.showMoreResults(); });
-                    this.showLess = Coveo.$("<div/>").addClass("coveo-folding-footer-section-for-more").appendTo(footer).fastClick(function () { return _this.showLessResults(); });
-                    var footerIconShowMore = Coveo.$("<div><span class='coveo-folding-footer-icon'></span></div>").addClass('coveo-more');
-                    var footerIconShowLess = Coveo.$("<div><span class='coveo-folding-footer-icon'></span></div>").addClass('coveo-less');
-                    var showMoreLink = Coveo.$('<a/>').addClass('coveo-folding-show-more').text(this.options.normalCaption);
-                    var showLessLink = Coveo.$('<a/>').addClass('coveo-folding-show-less').text(this.options.expandedCaption);
-                    this.showMore.append(showMoreLink);
-                    this.showLess.append(showLessLink);
-                    this.showMore.append(footerIconShowMore);
-                    this.showLess.append(footerIconShowLess);
-					if (this.options.indent>0)
-					{
-						this.showMore.css('left',this.options.indent+'px');
-						this.showLess.css('left',this.options.indent+'px');
-					}
-                }
-            };
+				this.showMore = Coveo.$("<div/>").addClass("coveo-folding-footer-section-for-less").appendTo(footer).fastClick(function () { return _this.showMoreResults(); });
+				this.showLess = Coveo.$("<div/>").addClass("coveo-folding-footer-section-for-more").appendTo(footer).fastClick(function () { return _this.showLessResults(); });
+				var footerIconShowMore = Coveo.$("<div><span class='coveo-folding-footer-icon'></span></div>").addClass('coveo-more');
+				var footerIconShowLess = Coveo.$("<div><span class='coveo-folding-footer-icon'></span></div>").addClass('coveo-less');
+				var showMoreLink = Coveo.$('<a/>').addClass('coveo-folding-show-more').text(this.options.normalCaption);
+				var showLessLink = Coveo.$('<a/>').addClass('coveo-folding-show-less').text(this.options.expandedCaption);
+				this.showMore.append(showMoreLink);
+				this.showLess.append(showLessLink);
+				this.showMore.append(footerIconShowMore);
+				this.showLess.append(footerIconShowLess);
+				if (this.options.indent>0)
+				{
+					this.showMore.css('left',this.options.indent+'px');
+					this.showLess.css('left',this.options.indent+'px');
+				}
+			};
             ResultsRelated.prototype.updateElementVisibility = function (subResultsLength) {
                /* if (this.normalCaption) {
                     this.normalCaption.fastToggle(!this.showingMoreResults);
@@ -103,10 +101,8 @@ var Coveo;
 				}
 				if (!this.options.alwaysShow)
 				{
-					if (true) {
-						this.showMore.fastToggle(!this.showingMoreResults);
-						this.showLess.fastToggle(this.showingMoreResults);
-					}
+					this.showMore.fastToggle(!this.showingMoreResults);
+					this.showLess.fastToggle(this.showingMoreResults);
 				}
                 Coveo.$(this.element).find('.coveo-show-if-normal').fastToggle(!this.showingMoreResults);
                 Coveo.$(this.element).find('.coveo-show-if-expanded').fastToggle(this.showingMoreResults);
