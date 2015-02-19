@@ -6,21 +6,16 @@
     <meta about="Search all content at once."/>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-	 <script type="text/javascript"
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCm-i7I611b3HxtQOCt3NlMtl5-oFX9Oc&sensor=false">
-    </script>
-  
-      <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCm-i7I611b3HxtQOCt3NlMtl5-oFX9Oc&sensor=false"> </script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <meta name="viewport"
           content="width=device-width, height=device-height, initial-scale=1.0,  maximum-scale=1.0, user-scalable=0">
     <script src="js/CoveoJsSearch.WithDependencies.js"></script>
-	 <script src="js/CoveoResultRelatedResults.js"></script>
-	      <script src="js/CoveoGoogleMap.js"></script>
-
+    <script src="js/CoveoResultRelatedResults.js"></script>
     <script src="js/d3.js"></script>
-  <script src="js/CoveoMarkerClusterer.js"></script>
-	 	<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
+	<script src="js/CoveoGoogleMap.js"></script>
+    <script src="js/CoveoMarkerClusterer.js"></script>
+ 	<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
 
     
     <link rel="stylesheet" href="css/CoveoFullSearch.css"/>
@@ -73,23 +68,8 @@ overflow: hidden;
 	    //Used for the related results on a result
 	    
 	    Coveo.Rest.SearchEndpoint.configureOnPremiseEndpoint('http://localhost:8080/rest/search');
-        //Coveo.Rest.SearchEndpoint.configureSampleEndpoint();
 
-        /*
-
-         // Use this code to use a cloud index
-         Coveo.Rest.SearchEndpoint.configureCloudEndpoint('OrganizationName');
-
-         // Use this code to use an on-premise index
-         Coveo.Rest.SearchEndpoint.configureOnPremiseEndpoint('http://server:8080/Coveo/Rest');
-
-         // Use this code to use a custom endpoint
-         Coveo.Rest.SearchEndpoint.endpoints["default"] = new Coveo.Rest.SearchEndpoint({
-         restUri: 'http://server:8080/Coveo/Rest'
-         });
-
-         */
-		 
+        //Make sure that we add the filters to the breadcrumb		
 		 $('#search').on('populateBreadcrumb', function(e, args){
                 if (mapQuery!=null)
 				{
@@ -108,6 +88,8 @@ overflow: hidden;
 					}
                 }
 		});
+		
+		//Hook up to clearBreadcrumb
 		$('#search').on('clearBreadcrumb', function(e, args){
                 mapQuery=null;
 				mapQueryCircle=null;
@@ -115,21 +97,21 @@ overflow: hidden;
 				$('#search').coveo('executeQuery');
 		});
 		
+		//Init the search page
         $('#search').coveo('init');
-		  $('#search').on('querySuccess', function (e, args) {
-	 // alert(args.results.totalCount);
+		
+		//On query sucess we need to recompose the map
+		$('#search').on('querySuccess', function (e, args) {
 			mapQueryResults = args.queryBuilder.computeCompleteExpression();
 			if (Coveo.Utils.isNullOrUndefined(mapQueryResults))
 			{
 				mapQueryResults='@uri';
 			}
-			//alert(mapQueryResults);
-			latfield="mylat2";
-			lonfield="mylon2";
 			allreset=false;
 			createResultsMap(mapQueryResults, "mylat","mylon");
-
 		});
+		
+		//When we build the query we might need to add the mapquery + circle query to the current query
 		$('#search').on("buildingQuery", function (e, args) {
 					if (mapQuery!=null)
 					{
@@ -140,9 +122,6 @@ overflow: hidden;
 					   args.queryBuilder.advancedExpression.add(mapQueryCircle);
 					}
 		});
-
-		
-
 		
     });
     </script>

@@ -29,14 +29,13 @@ function addResultMarker(latitude, longitude, name, icon, text,selected) {
     });
 
     var infobox = new InfoBox({
-        content: '<h3 style="font-family: Arial; font-size: 13px; color: #FFFFFF; background-color: #0099FF; text-align: center; font-style: italic">' + marker.name+"</h3>"+text, 
+        content: "<div style='background-color:#fff'>"+marker.name+"<br>"+text+"</div>", 
         disableAutoPan: false,
         maxWidth: 0,
         pixelOffset: new google.maps.Size(-112, 0),
         zIndex: -1,
         closeBoxURL: ""
     });
-
     google.maps.event.addListener(marker, 'click', function () {
         this.selected = !this.selected;
 		var circle = new google.maps.Circle({

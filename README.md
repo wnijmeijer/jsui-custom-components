@@ -23,6 +23,8 @@ Custom components made for [Coveo jsui framework](https://developers.coveo.com/d
 - [CoveoTimeGraph](#coveotimegraph)
 - [CoveoResultsRelated](#coveoresultsrelated)
 - [GoogleMap](#coveogooglemap)
+- [People](#coveopeople)
+- [PeopleMap](#coveopeoplemap)
 
 ### CoveoPopularQuerier
 
@@ -98,3 +100,12 @@ Show Always will always show the related section, without the need to open it.
 Will show a googlemap with all the results plotted on it. It assume's there are two fields containing the lat/lon.
 After zooming in/out/panning the map will redraw and the boundaries will be used to filter the search results.
 Clicking on a point will act as a filter (using a query function) to only show items within 1000 m of the selected point.
+
+
+### coveopeople
+Will search for people which are available in a certain timeframe (Availability planner). 
+Including a nested query to search for example resume's and report back the authors.
+
+
+### coveopeoplemap
+Combines coveopeople and coveogooglemap
