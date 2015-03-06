@@ -32,7 +32,7 @@ function addResultMarker(latitude, longitude, name, icon, text,selected) {
         content: "<div style='background-color:#fff'>"+marker.name+"<br>"+text+"</div>", 
         disableAutoPan: false,
         maxWidth: 0,
-        pixelOffset: new google.maps.Size(-112, 0),
+        pixelOffset: new google.maps.Size(-52, 0),
         zIndex: -1,
         closeBoxURL: ""
     });
@@ -141,9 +141,30 @@ function mapEvent()
 		 {
 			var ne = bounds2.getNorthEast(); // LatLng of the north-east corner
 			var sw = bounds2.getSouthWest(); // LatLng of the south-west corder
-			var nw = new google.maps.LatLng(ne.lat(), sw.lng());
-			var se = new google.maps.LatLng(sw.lat(), ne.lng());
-		 var query='@'+latfield+'<='+ne.lat()+' AND @'+latfield+'>='+sw.lat()+' AND @'+lonfield+'>='+sw.lng()+' AND @'+lonfield+'<='+ne.lng();
+		 var query='';//'@'+latfield+'<='+Math.max(ne.lat(),sw.lat())+' AND @'+latfield+'>='+Math.min(sw.lat(),ne.lat())+' AND @'+lonfield+'>='+Math.max(sw.lng(),ne.lng())+' AND @'+lonfield+'<='+Math.min(ne.lng(),sw.lng());
+		 //|------------------|
+		 //|           NE 53,6|  //lat,lon
+		 //|                  |
+		 //|SW 52,4           |
+		 if (ne.lat()>sw.lat()) //ne=67>sw=-5
+		 {
+			query='@'+latfield+'<='+ne.lat()+' AND @'+latfield+'>='+sw.lat();
+		 }
+		 else
+		 {
+			query='@'+latfield+'>='+ne.lat()+' AND @'+latfield+'<='+sw.lat();
+		 }
+		 if (ne.lng()>sw.lng()) //ne=67>sw=-5  -70 -142  
+		 {
+			query=query+' @'+lonfield+'<='+ne.lng()+' AND @'+lonfield+'>='+sw.lng();
+		 }
+		 else
+		 {
+			query=query+' @'+lonfield+'>='+ne.lng()+' AND @'+lonfield+'<='+sw.lng();
+			//172 -64
+			//-64 172
+		 }
+		
 		 mapQuery=query;
 		 updatebounds=false;
 		$('#search').coveo('executeQuery');	 

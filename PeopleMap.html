@@ -177,12 +177,12 @@
 					//We also want to add a nested query against the resume's
 					// add the disjunction query to get all comments, attachments and tickets matching the query
 					var basicExpression = args.queryBuilder.expression.build();
-					var completeQuery = (basicExpression!="undefined") ? "(" + basicExpression + ")" : "";
+					var completeQuery = (typeof basicExpression==='undefined') ? "":"(" + basicExpression + ")";
 			
 					var advancedExpression = "";//!args.Builder.AdvancedExpression.Empty ? " (" + args.Builder.AdvancedExpression.ToString() + ")" : "";
 
 					if (completeQuery!="") {
-						args.queryBuilder.disjunctionExpression.add("@sysfiletype=activedirperson @employeenumber=[[@mycvemp]   ("+completeQuery+") "+advancedExpression+" ]");
+						//args.queryBuilder.disjunctionExpression.add("@sysfiletype=activedirperson @employeenumber=[[@mycvemp]   ("+completeQuery+") "+advancedExpression+" ]");
 					}
 			});
 			
