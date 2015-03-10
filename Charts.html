@@ -41,7 +41,7 @@
       $(function () {
 	    //Used for the related results on a result
 	    
-	    Coveo.Rest.SearchEndpoint.configureOnPremiseEndpoint('http://localhost:8080/rest/search');
+	    Coveo.Rest.SearchEndpoint.configureOnPremiseEndpoint('https://ces.corp.coveo.com/rest/search');//http://localhost:8080/rest/search');
         
 		new CoveoCharts({searchInterface:"#search",
 		                 charttitle:'Top Accounts',
@@ -143,7 +143,7 @@
          data-id="All"
          data-caption="All"
          data-icon="coveo-sprites-tab-all-content"
-		 data-expression='@uri  @syssfamountconverted'
+		 data-expression='@uri '
 		 ></a>
       
     </div>

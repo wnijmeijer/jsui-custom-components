@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>All Content</title>
+    <meta about="Search all content at once."/>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport"
+          content="width=device-width, height=device-height, initial-scale=1.0,  maximum-scale=1.0, user-scalable=0">
+    <script src="js/CoveoJsSearch.WithDependencies.js"></script>
+    <script src="js/d3.js"></script>
+    <script src="charts/nv.d3.js"></script>
+    <link href="charts/nv.d3.min.css" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="css/CoveoFullSearch.css"/>
+	 <script src="js/CoveoCharts.js"></script>
+	<script src="https://ces.corp.coveo.com/js/GetSearchToken.aspx"></script>
+
+	<style>
+	.coveo-slider-container.coveo-with-graph svg .coveo-bar {
+      fill: #dddddd;
+      shape-rendering: crispEdges; 
+	  height: auto;
+	 }
+	 .coveo-slider-container.coveo-with-graph svg {
+      fill: #dddddd;
+      shape-rendering: crispEdges; 
+	  height: auto;
+	 }
+	 .chart-title{
+	   font-size:14pt;
+	   font-weight:bold;
+	   text-align:center;
+	   width:100%;
+	 }
+	</style>
+
+
+    <script type="text/javascript">
+	var groupByIndex;
+      $(function () {
+	    //Used for the related results on a result
+	    
+	    //Coveo.Rest.SearchEndpoint.configureOnPremiseEndpoint({restUri:'https://ces.corp.coveo.com/rest/search',accessToken: window.SEARCH_TOKEN});//http://localhost:8080/rest/search');
+        Coveo.Rest.SearchEndpoint.endpoints['default'] = new Coveo.Rest.SearchEndpoint({
+			restUri: 'https://cloudplatform.coveo.com/rest/search',
+    accessToken: 'c37f96f3-e0e4-4370-bc95-f33e080ee89d', // token for an anonymous dummy user
+    queryStringArguments: {
+      workgroup: 'Coveo'
+    }
+		  });
+		new CoveoCharts({searchInterface:"#search",
+		                 charttitle:'Top Accounts by Revenue',
+						 chartselector:"#author-chart",
+						 charttype:"pie",
+						 field:"@sfaccountname",
+						 seriesfield:"",
+						 computedfields:[{field: '@sfopportunityamountconverted',operation: 'sum'}],
+						 includecount: false,
+						 legendtext:"",
+						 sortCriteria:"ComputedFieldDescending",
+						 numberOfResults:5,
+						 debug : false});
+	    new CoveoCharts({searchInterface:"#search",
+						 charttitle:'Revenue By Year',
+						 chartselector:"#year-chart",
+						 charttype:"multibar",
+						 field:"@sysyear",
+						 seriesfield:"",
+						 computedfields:[{field: '@sfopportunityamountconverted',operation: 'sum'},{field: '@sfopportunityamountlicensecconverted',operation: 'sum'},{field: '@sfopportunityconsultingstotalcconverted',operation: 'sum'}],
+						 colors:'green;orange', 
+						 includecount:false,
+						 legendtext:"Total Sum;License Sum;PS Sum",
+						 sortCriteria:"alphaAscending",
+						 numberOfResults:15,debug : false});
+		new CoveoCharts({searchInterface:"#search",
+		                 charttitle:'Revenue By Account',
+						 chartselector:"#distribution-chart",
+						 charttype:"stackedarea",
+						 field:"@sfaccountname",
+						 seriesfield:"",
+						 computedfields:[{field: '@sfopportunityamountconverted',operation: 'sum'},{field: '@sfopportunityamountlicensecconverted',operation: 'sum'},{field: '@sfopportunityconsultingstotalcconverted',operation: 'sum'}],
+						 colors:'green;red;orange', 
+						 includecount:false,
+						 legendtext:"Total Sum;License Sum;PS Sum",
+						 sortCriteria:"ComputedFieldDescending",
+						 numberOfResults:15,debug : false});
+		new CoveoCharts({searchInterface:"#search",
+		                 charttitle:'Distribution Chart (no series, no computed)',
+						 chartselector:"#distribution-range-chart",
+						 charttype:"linefocus",
+						 field:"@sysdate",
+						 seriesfield:"",
+						 computedfields:[], 
+						 includecount:true,
+						 legendtext:"Count",
+						 sortCriteria:"Occurences",
+						 numberOfResults:5,debug : false});
+		new CoveoCharts({searchInterface:"#search",
+		                 charttitle:'Distribution Revenue',
+						 chartselector:"#distribution-range-chart2",
+						 charttype:"linebar",
+						 field:"@sysdate",
+						 seriesfield:"",
+						 computedfields:[{field: '@sfopportunityamountconverted',operation: 'sum'}], 
+						 includecount:true,
+						 legendtext:"Count;Average",
+						 sortCriteria:"Occurences",
+						 numberOfResults:5,debug : false});
+		new CoveoCharts({searchInterface:"#search",
+		                 charttitle:'Distribution Revenue',
+						 chartselector:"#distribution-range-chart3",
+						 charttype:"linefocus",
+						 field:"@sysdate",
+						 seriesfield:"",
+						 computedfields:[{field: '@sfopportunityamountconverted',operation: 'sum'},{field: '@sfopportunityamountlicensecconverted',operation: 'sum'},{field: '@sfopportunityconsultingstotalcconverted',operation: 'sum'}],
+						 colors:'green;red;orange',
+						 includecount:false,
+						 legendtext:"Total Sum;License Sum;PS Sum",
+						 sortCriteria:"Occurences",
+						 numberOfResults:5,debug : false});
+		new CoveoCharts({searchInterface:"#search",
+		                 charttitle:'Distribution by Top Account',
+						 chartselector:"#distribution-range-chart4",
+						 charttype:"multibar",
+						 field:"@sysdate",
+						 seriesfield:"@sfaccountname",
+						 computedfields:[{field: '@sfopportunityamountconverted',operation: 'sum'}], 
+						 legendtext:"",
+						 includecount:false,
+						 sortCriteria:"ComputedFieldDescending",
+						 numberOfResults:5,debug : false});
+//		new CoveoCharts({searchInterface:"#search",chartselector:"#distribution-range-chart",charttype:"stackedarea",field:"@sysdate",fields:"",computedfields:[{field: '@mylat',operation: 'minimum'},{field: '@mylat',operation: 'maximum'},{field: '@mylat',operation: 'average'}], legendtext:"Count;Lat min;Lat min;Lat avg",sortCriteria:"alphaAscending",numberOfResults:15,debug : false});
+		//new CoveoCharts({searchInterface:"#search",chartselector:"#distribution-chart",charttype:"stackedarea",field:"@sysdate",fields:"@sysauthor;@syssource",computedfields:[], legendtext:"Author;Source",sortCriteria:"Occurences",numberOfResults:5,debug : false});
+        $('#search').coveo('init');
+		
+		
+
+
+ 	});
+		
+    </script>
+  </head>
+
+  <body id="search" class='CoveoSearchInterface' data-enable-history="true">
+
+    <div class="coveo-tab-section">
+      <a class="CoveoTab"
+         data-id="All"
+         data-caption="All"
+         data-icon="coveo-sprites-tab-all-content"
+		 data-expression='@sfid'
+		 ></a>
+      
+    </div>
+    <div class="coveo-search-section">
+      <div class="coveo-logo-column">
+        <div class="coveo-logo"></div>
+      </div>
+      <div class="coveo-searchBox-column" >
+        <div class="coveo-search-section-wrapper">
+          <div class="CoveoSettings" data-include-in-menu=".CoveoShareQuery,.CoveoPreferencesPanel"></div>
+          <div class="CoveoSearchBox" data-activate-omnibox="true"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="coveo-results-section">
+      <div class="coveo-facet-column">
+        <div data-tab="All">
+
+          <div class="CoveoFacetRange" data-tab="All" data-title="Relative date distribution" data-field="@sysdate"
+               data-date-field="true" data-range-slider="true" data-slider-graph-steps="20"
+               data-slider-start="2007/12/31"
+               data-slider-end="2014/12/31"></div>
+
+          <div class="CoveoFacet"
+          data-title="Type" 
+          data-field="@objecttype" 
+          data-tab='Salesforce'
+          data-number-of-values="5"
+          data-show-icon="true"></div>
+      
+        <div class="CoveoFacet"
+          data-title="Close quarter"
+          data-field="@sfopportunityclosedquarterc"
+          data-computed-field="@sfopportunityamountconverted"
+          data-sort-criteria="AlphaDescending"></div>
+
+        <div class="CoveoFacet" 
+          data-title="Salesforce Account" 
+          data-field="@sfaccountname" 
+          data-computed-field="@sfopportunityamountconverted"
+          data-sort-criteria="ComputedFieldDescending"
+          data-number-of-values="7"></div>
+
+        <div class="CoveoFacet" 
+          data-title="Salesforce Owner"
+          data-field="@sfownername"
+          data-computed-field="@sfopportunityamountconverted"
+          data-sort-criteria="ComputedFieldDescending"
+          data-number-of-values="7"></div>
+
+        <div class="CoveoFacet" 
+          data-title="Opportunity Type" 
+          data-field="@sfopportunitytype" 
+          data-computed-field="@sfopportunityamountconverted"
+          data-sort-criteria="ComputedFieldDescending"
+          data-number-of-values="5"></div>
+
+        <div class="CoveoFacet" 
+          data-title="Opportunity Stage" 
+          data-field="@sfopportunitystagename" 
+          data-computed-field="@sfopportunityamountconverted"
+          data-sort-criteria="ComputedFieldDescending"></div>
+
+        <div class="CoveoFacet" 
+          data-title="Lead Source" 
+          data-field="@sfleadsource" 
+          data-computed-field="@sfopportunityamountconverted"
+          data-sort-criteria="ComputedFieldDescending"
+          data-number-of-values="5"></div>
+        
+        <div class="CoveoFacet" 
+          data-title="Deal Type" 
+          data-field="@sfopportunitydealtypec" 
+          data-computed-field="@sfopportunityamountconverted"
+          data-sort-criteria="ComputedFieldDescending"></div>
+
+        <div class="CoveoFacet" 
+          data-title="Competition" 
+          data-field="@sfopportunitycompetitionc" 
+          data-computed-field="@sfopportunityamountconverted"
+          data-sort-criteria="ComputedFieldDescending"
+          data-number-of-values="5"></div>
+
+        <div class="CoveoFacet" 
+          data-title="ISR" 
+          data-field="@sfibdusername"
+          data-computed-field='@sfopportunityamountconverted' 
+          data-sort-criteria="ComputedFieldDescending"
+          data-number-of-values="5"></div>
+
+        <div class="CoveoFacet" 
+          data-title="Region" 
+          data-field="@sfopportunityregionc" 
+          data-computed-field="@sfopportunityamountconverted"
+          data-sort-criteria="ComputedFieldDescending"></div>
+
+        <div class="CoveoFacet" 
+          data-title="Customer License Record" 
+          data-field="@sfrecordtypename"></div>
+          
+        <div class="CoveoFacet" 
+          data-title="Lead Status" 
+          data-field="@sfleadstatus"></div>
+
+
+
+        </div>
+      </div>
+
+      <div class="coveo-results-column">
+        <div class="CoveoShareQuery"></div>
+        <div class="CoveoPreferencesPanel">
+          <div class="CoveoResultsPreferences"></div>
+          <div class="CoveoResultsFiltersPreferences"></div>
+        </div>
+        <div class="CoveoBreadcrumb"></div>
+
+        <div class="coveo-results-header">
+          <div class="coveo-summary-section">
+            <span class="CoveoQuerySummary"></span>
+            <span class="CoveoQueryDuration"></span>
+          </div>
+          <div class="coveo-sort-section">
+            <span class="CoveoSort" data-sort-criteria="relevancy">Relevance</span>
+            <span class="CoveoSort" data-sort-criteria="date descending,date ascending">Date</span>
+          </div>
+          <div class="coveo-clear"></div>
+        </div>
+
+        <div class="CoveoHiddenQuery"></div>
+        <div class="CoveoDidYouMean"></div>
+        <div class="CoveoErrorReport" data-pop-up="false"></div>
+<div>
+
+<div id="author-chart" style="padding-bottom:30px"><svg style="height:300px"></svg>
+</div>
+<div id="year-chart" style="padding-bottom:30px"><svg style="height:300px"></svg>
+</div>
+<div id="distribution-chart" style="padding-bottom:30px"><svg style="height:300px"></svg></div>
+<div id="distribution-range-chart" style="padding-bottom:30px"><svg style="height:300px"></svg></div>
+<div id="distribution-range-chart2" style="padding-bottom:30px"><svg style="height:300px"></svg></div>
+<div id="distribution-range-chart3" style="padding-bottom:30px"><svg style="height:300px"></svg></div>
+<div id="distribution-range-chart4" style="padding-bottom:30px"><svg style="height:700px"></svg></div>
+        <div class="CoveoResultList" data-wait-animation="fade">
+          <script id="Default" type="text/x-underscore-template">
+            <div class="coveo-date"><%-dateTime(raw.sysdate)%></div>
+
+            <div class="coveo-title">
+              <a class="CoveoResultLink" ><%=title?highlight(title, titleHighlights):clickUri%></a>
+
+              <%= loadTemplate("DefaultQuickView") %>
+            </div>
+
+            <div class="coveo-excerpt">
+              <%=highlight(excerpt, excerptHighlights)%>
+            </div>
+
+            <div class="CoveoPrintableUri"></div>
+
+            <table class="CoveoFieldTable">
+              <tr data-field="@sysauthor" data-caption="Author"></tr>
+            </table>
+            <div class="Calendar" style=""></div>
+          </script>
+		 
+          <script id="DefaultQuickView" type="text/x-underscore-template">
+            <div class="CoveoQuickView" data-title="<%= attrEncode(fromFileTypeToIcon(obj) + title) %>"
+                 data-fixed="true"
+                 data-template-id="DefaultQuickViewContent">
+            </div>
+          </script>
+
+          <script id="DefaultQuickViewContent" type="text/x-underscore-template">
+            <div class="coveo-quick-view-header">
+              <table class="CoveoFieldTable">
+                <tr data-field="@sysdate" data-caption="Date" data-helper="dateTime"></tr>
+                <tr data-field="@objecttype" data-caption="Type"></tr>
+              </table>
+            </div>
+            <div class="CoveoQuickViewDocument"></div>
+          </script>
+
+          <script class="result-template" type="text/x-underscore-template">
+            <%=
+            loadTemplates({
+            'Default' : 'default'		
+			
+            })
+            %>
+			
+          </script>
+
+        </div>
+			  
+        <div class="CoveoPager"></div>
+      </div>
+    </div>
+
+  </body>
+
+</html>
