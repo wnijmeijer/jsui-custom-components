@@ -252,6 +252,7 @@
 
     function checkAll(all,myx,defval)
 	{
+	return all;
 	   var newall=[];
 	   var curKey="";
 	   var found=false;
@@ -267,7 +268,7 @@
 		   if (allval.key==curKey)
 		   {
 		       _.forEach( allval.values, function ( vals ){
-			      if (vals.x==myx)
+			      if (vals.x.getTime()===myx.getTime())
 				  {
 				     found=true;
 				  }
